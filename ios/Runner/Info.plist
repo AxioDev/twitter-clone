@@ -64,6 +64,8 @@
 	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Used to select photos for posts and avatar</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
