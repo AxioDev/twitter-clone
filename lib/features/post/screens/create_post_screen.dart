@@ -54,7 +54,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
     setState(() => _submitting = true);
 
     try {
-      await ref.read(createPostProvider.notifier).submit(
+      await ref.read(postRepositoryProvider).createPost(
             content: content,
             mediaBytes: _mediaBytes,
             mediaExtension: _mediaExtension,
