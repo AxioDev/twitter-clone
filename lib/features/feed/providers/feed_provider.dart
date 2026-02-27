@@ -47,6 +47,7 @@ class FeedNotifier extends _$FeedNotifier {
       final morePosts =
           await ref.read(feedRepositoryProvider).getFeed(cursor: cursor);
 
+      if (!ref.mounted) return;
       if (morePosts.isNotEmpty) {
         state = AsyncData([...currentPosts, ...morePosts]);
       }

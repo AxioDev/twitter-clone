@@ -43,12 +43,12 @@ class NotificationsNotifier extends _$NotificationsNotifier {
 
   Future<void> markAsRead(String notificationId) async {
     await ref.read(notificationRepositoryProvider).markAsRead(notificationId);
-    ref.invalidateSelf();
+    if (ref.mounted) ref.invalidateSelf();
   }
 
   Future<void> markAllAsRead() async {
     await ref.read(notificationRepositoryProvider).markAllAsRead();
-    ref.invalidateSelf();
+    if (ref.mounted) ref.invalidateSelf();
   }
 }
 
