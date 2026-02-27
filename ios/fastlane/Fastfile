@@ -1,0 +1,62 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Upload le dernier IPA sur TestFlight"
+  lane :beta do
+    # ── Auth App Store Connect via API Key ──
+    api_key = app_store_connect_api_key(
+      key_id:       ENV["ASC_KEY_ID"],
+      issuer_id:    ENV["ASC_ISSUER_ID"],
+      key_filepath: ENV["ASC_KEY_PATH"],
+      in_house:     false,
+    )
+
+    # ── Lire version depuis pubspec.yaml ──
+    require 'yaml'
+    pubspec = YAML.load_file("../../pubspec.yaml")
+    version_full = pubspec["version"]
+    version_name, build_number = version_full.split("+")
+    UI.message("Uploading v#{version_name} (#{build_number}) to TestFlight")
+
+    project_root = File.expand_path("../../", __dir__)
+    ipa_path = File.join(project_root, "build/ios/ipa/twitter_clone.ipa")
+    UI.user_error!("IPA introuvable : #{ipa_path}\nLance d'abord : flutter build ipa --release") unless File.exist?(ipa_path)
+
+    # ── Upload TestFlight ──
+    upload_to_testflight(
+      api_key:                           api_key,
+      ipa:                               ipa_path,
+      skip_waiting_for_build_processing: true,
+    )
+
+    UI.success("✅ v#{version_name} (#{build_number}) envoye sur TestFlight !")
+  end
+
+  desc "Upload le dernier IPA sur l'App Store"
+  lane :release do
+    api_key = app_store_connect_api_key(
+      key_id:       ENV["ASC_KEY_ID"],
+      issuer_id:    ENV["ASC_ISSUER_ID"],
+      key_filepath: ENV["ASC_KEY_PATH"],
+      in_house:     false,
+    )
+
+    require 'yaml'
+    pubspec = YAML.load_file("../../pubspec.yaml")
+    version_full = pubspec["version"]
+    version_name, build_number = version_full.split("+")
+    UI.message("Uploading v#{version_name} (#{build_number}) to App Store")
+
+    ipa_path = "../build/ios/ipa/twitter_clone.ipa"
+    UI.user_error!("IPA introuvable : #{ipa_path}") unless File.exist?(ipa_path)
+
+    deliver(
+      api_key:          api_key,
+      ipa:              ipa_path,
+      skip_metadata:    true,
+      skip_screenshots: true,
+    )
+
+    UI.success("✅ v#{version_name} (#{build_number}) envoye sur l'App Store !")
+  end
+end

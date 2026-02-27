@@ -1,0 +1,9 @@
+# Twitter Clone — Fastlane Appfile
+#
+# App Store Connect API key auth is configured in Fastfile
+# via app_store_connect_api_key action (no password auth needed).
+
+app_identifier("com.twitterclone.twitterClone")
+apple_id("thibaultbarillet@gmail.com")
+team_id("J9KLFLQ7FL")
+itc_team_id("J9KLFLQ7FL")
