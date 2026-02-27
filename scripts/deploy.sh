@@ -119,6 +119,21 @@ echo -e "${GREEN}[2/4] Push $TAG sur GitHub${NC}"
 
 # ── 3. Flutter build IPA ──
 echo -e "${BLUE}[3/4] flutter build ipa --release...${NC}"
+
+# Deverrouiller les keychains pour codesign (evite errSecInternalComponent)
+# La cle privee Apple Distribution est dans ci_signing_test (mot de passe: ci_temp_password)
+CI_KEYCHAIN="$HOME/Library/Keychains/ci_signing_test.keychain-db"
+LOGIN_KEYCHAIN="$HOME/Library/Keychains/login.keychain-db"
+
+# S'assurer que ci_signing_test est dans la liste de recherche
+security list-keychains -s "$CI_KEYCHAIN" "$LOGIN_KEYCHAIN" /Library/Keychains/System.keychain 2>/dev/null || true
+security unlock-keychain -p "ci_temp_password" "$CI_KEYCHAIN" 2>/dev/null || true
+
+if [ -n "${LOGIN_KEYCHAIN_PASSWORD:-}" ]; then
+    security unlock-keychain -p "$LOGIN_KEYCHAIN_PASSWORD" "$LOGIN_KEYCHAIN" 2>/dev/null || true
+fi
+echo -e "${GREEN}  Keychains deverrouilles${NC}"
+
 flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
