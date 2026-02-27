@@ -30,7 +30,9 @@
 - RLS DELETE/UPDATE silencieux (0 rows, pas d'exception)
 - Notification trigger: stocke `reply.id` comme `post_id`, pas le post parent
 - `tearDownAll` ne doit pas supprimer les relations seed data
-- Keychain `ci_signing_test` doit être retiré de la liste: `security list-keychains -s login.keychain-db System.keychain`
+- Keychain `ci_signing_test` contient la clé privée Apple Distribution — NE PAS le retirer de la liste de recherche
+- Pour déverrouiller `ci_signing_test`: `security unlock-keychain -p ci_temp_password ~/Library/Keychains/ci_signing_test.keychain-db`
+- Le deploy script gère ça automatiquement
 
 ## Infra Hetzner
 - Serveur: CX23 (2c/4GB) — `88.198.120.138` — SSH: `ssh -i ~/.ssh/hetzner_supabase root@88.198.120.138`
